@@ -1,14 +1,14 @@
 {
-  "name": "promise-throttle",
-  "version": "1.0.0",
+  "name": "directly",
+  "version": "1.0.1",
   "description": "Like Promise.all, only less so",
-  "main": "promise-throttle.js",
+  "main": "directly.js",
   "scripts": {
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wheresrhys/promise-throttle.git"
+    "url": "https://github.com/wheresrhys/directly.git"
   },
   "keywords": [
     "promise",
@@ -20,9 +20,9 @@
   "author": "Rhys Evans",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wheresrhys/promise-throttle/issues"
+    "url": "https://github.com/wheresrhys/directly/issues"
   },
-  "homepage": "https://github.com/wheresrhys/promise-throttle",
+  "homepage": "https://github.com/wheresrhys/directly",
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^2.2.5"

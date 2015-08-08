@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect;
-var PromiseThrottle = require('../promise-throttle');
+var Directly = require('../directly');
 
 var setupPromises = function (n) {
 
@@ -49,7 +49,7 @@ describe('concordance with Promise.all', function () {
 		it('should resolve if they all resolve', function (done) {
 			var promises = setupPromises(2);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.then(function (res) {
 					expect(res).to.eql([0, 1]);
 					done();
@@ -64,7 +64,7 @@ describe('concordance with Promise.all', function () {
 		it('should reject if any of them reject', function (done) {
 			var promises = setupPromises(2);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.catch(function (res) {
 					expect(res).to.equal('err1');
 					done();
@@ -79,7 +79,7 @@ describe('concordance with Promise.all', function () {
 		it('should resolve if they all resolve', function (done) {
 			var promises = setupPromises(3);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.then(function (res) {
 					expect(res).to.eql([0, 1, 2]);
 					done();
@@ -94,7 +94,7 @@ describe('concordance with Promise.all', function () {
 		it('should reject if any of them reject', function (done) {
 			var promises = setupPromises(3);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.catch(function (res) {
 					expect(res).to.equal('err1');
 					done();
@@ -108,7 +108,7 @@ describe('concordance with Promise.all', function () {
 		it('should resolve if they all resolve', function (done) {
 			var promises = setupPromises(4);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.then(function (res) {
 					expect(res).to.eql([0, 1, 2, 3]);
 					done();
@@ -123,7 +123,7 @@ describe('concordance with Promise.all', function () {
 		it('should reject if any of them reject', function (done) {
 			var promises = setupPromises(4);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.catch(function (res) {
 					expect(res).to.equal('err1');
 					done();
@@ -135,7 +135,7 @@ describe('concordance with Promise.all', function () {
 		it('should preserve promise order in the results', function () {
 			var promises = setupPromises(4);
 
-			new PromiseThrottle(3, promises.functions).run()
+			new Directly(3, promises.functions).run()
 				.then(function (res) {
 					expect(res).to.eql([1,2,3,4]);
 					done();
@@ -158,7 +158,7 @@ describe('throttling', function () {
 			spyVal = true;
 		});
 
-		new PromiseThrottle(3, promises.functions).run()
+		new Directly(3, promises.functions).run()
 
 		expect(spyVal).to.be.false;
 	});
@@ -179,7 +179,7 @@ describe('throttling', function () {
 			return func4();
 		}
 
-		new PromiseThrottle(3, promises.functions).run()
+		new Directly(3, promises.functions).run()
 
 		expect(spyVals).to.eql([]);
 
@@ -208,7 +208,7 @@ describe('functional calling', function () {
 	it('should be callable as a function', function (done) {
 		var promises = setupPromises(3);
 
-		PromiseThrottle(3, promises.functions)
+		Directly(3, promises.functions)
 			.then(function (res) {
 				expect(res).to.eql([0, 1, 2]);
 				done();

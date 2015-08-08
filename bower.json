@@ -1,8 +1,8 @@
 {
-  "name": "promise-throttle",
-  "main": "promise-throttle.js",
+  "name": "directly",
+  "main": "directly.js",
   "version": "0.0.0",
-  "homepage": "https://github.com/wheresrhys/promise-throttle",
+  "homepage": "https://github.com/wheresrhys/directly",
   "authors": [
     "Rhys Evans <wheresrhys@gmail.com>"
   ],

@@ -2,18 +2,18 @@
 
 require('es6-promise').polyfill();
 
-var PromiseThrottle = function (throttleLimit, funcs) {
-	if (!(this instanceof PromiseThrottle)) {
-		return new PromiseThrottle(throttleLimit, funcs).run();
+var Directly = function (concurrence, funcs) {
+	if (!(this instanceof Directly)) {
+		return new Directly(concurrence, funcs).run();
 	}
 	this.results = [];
-	this.throttleLimit = throttleLimit;
+	this.concurrence = concurrence;
 	this.funcs = funcs;
 	this.counter = 0;
 };
 
-PromiseThrottle.prototype.run = function () {
-	if (this.funcs.length <= this.throttleLimit) {
+Directly.prototype.run = function () {
+	if (this.funcs.length <= this.concurrence) {
 		return Promise.all(this.funcs.map(function (func) {
 			return func();
 		}));
@@ -24,7 +24,7 @@ PromiseThrottle.prototype.run = function () {
 		this.reject = reject;
 	}.bind(this));
 
-	var i = this.throttleLimit;
+	var i = this.concurrence;
 
 	while (i--) {
 		this.executeOne();
@@ -34,7 +34,7 @@ PromiseThrottle.prototype.run = function () {
 	return this.promise;
 };
 
-PromiseThrottle.prototype.executeOne = function () {
+Directly.prototype.executeOne = function () {
 	var promise = this.funcs.shift()();
 
 	this.results.push(promise);
@@ -46,7 +46,7 @@ PromiseThrottle.prototype.executeOne = function () {
 	this.competitors.push(promise);
 };
 
-PromiseThrottle.prototype.startRace = function () {
+Directly.prototype.startRace = function () {
 	Promise.race(this.competitors)
 		.then(function (index) {
 			if (!this.funcs.length) {
@@ -67,4 +67,4 @@ PromiseThrottle.prototype.startRace = function () {
 };
 
 
-module.exports = PromiseThrottle;
+module.exports = Directly;
