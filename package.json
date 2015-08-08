@@ -1,0 +1,33 @@
+{
+  "name": "promise-throttle",
+  "version": "1.0.0",
+  "description": "Like Promise.all, only less so",
+  "main": "promise-throttle.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wheresrhys/promise-throttle.git"
+  },
+  "keywords": [
+    "promise",
+    "es6",
+    "promise.all",
+    "throttle",
+    "rate-limiting"
+  ],
+  "author": "Rhys Evans",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wheresrhys/promise-throttle/issues"
+  },
+  "homepage": "https://github.com/wheresrhys/promise-throttle",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "es6-promise": "^2.3.0"
+  }
+}
