@@ -1,8 +1,6 @@
 'use strict';
 
-// Takes an array of promise returning functions and runs a maximum of N of them at once
-// Returns an array of promises
-require('es6-promise');
+require('es6-promise').polyfill();
 
 var PromiseThrottle = function (throttleLimit, funcs) {
 	if (!(this instanceof PromiseThrottle)) {

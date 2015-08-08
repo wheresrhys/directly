@@ -1,0 +1,31 @@
+{
+  "name": "promise-throttle",
+  "main": "promise-throttle.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/wheresrhys/promise-throttle",
+  "authors": [
+    "Rhys Evans <wheresrhys@gmail.com>"
+  ],
+  "description": "Like Promise.all, only less so",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "promise",
+    "es6",
+    "promise.all",
+    "throttle",
+    "rate-limiting"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "es6-promise": "~2.2.0"
+  }
+}
