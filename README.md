@@ -10,7 +10,7 @@ In Devon people will often promise to do things 'directly', meaning they'll do i
 ## Usage
 
 ```
-var Directly = require('directly`);
+var Directly = require('directly');
 var urls = []; // a big array of urls
 var fetchers = urls.map(function (url) {
     return function () {
