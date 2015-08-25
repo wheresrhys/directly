@@ -1,5 +1,7 @@
 'use strict';
 
+require('es6-promise').polyfill();
+
 var expect = require('chai').expect;
 var Directly = require('../directly');
 
