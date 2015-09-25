@@ -1,5 +1,11 @@
 'use strict';
 
+function getRemover (arr, target) {
+	return () => {
+		arr.splice(arr.indexOf(target), 1);
+	};
+}
+
 class Directly {
 	constructor (concurrence, funcs) {
 		if (!(this instanceof Directly)) {
@@ -9,13 +15,15 @@ class Directly {
 		this.concurrence = concurrence;
 		this.funcs = funcs;
 		this.terminates = Array.isArray(this.funcs);
+		this.cancelled = false;
+		if (!Array.isArray(this.funcs)) {
+			this.funcs.attachDirectlyInstance(this);
+		}
 		this.competitors = [];
 	}
 
 	run () {
-
 		if (this.terminates) {
-			this.running = true;
 			if (this.funcs.length <= this.concurrence) {
 				return Promise.all(this.funcs.map(func => func()));
 			}
@@ -25,66 +33,86 @@ class Directly {
 			}
 			this.startRace();
 
-			return new Promise((resolve, reject) => {
-				this.resolve = resolve;
-				this.reject = reject;
-			});
-		} else {
-			if (this.running === true) {
-				if (this.competitors.length < this.concurrence) {
-					// cancel the old race/restart race/blend race ???
-				} // else do nothing - it should just get shifted off the list in time
 
-			} else {
-				// never take the Promise.all shortcut as even if the initial list is short, it
-				// could easily grow to exceed the concurrence limit.
-				while (this.funcs.length && this.concurrence - this.competitors.length) {
-					this.executeOne();
-				}
-				this.startRace();
+		} else if (!this.running) {
+			// never take the Promise.all shortcut as even if the initial list is short, it
+			// could easily grow to exceed the concurrence limit.
+			while (this.funcs.length && this.concurrence - this.competitors.length) {
+				this.executeOne();
 			}
-			this.running === true;
+			this.startRace();
+		}
+		this.running === true;
+		if (!this.resolve) {
+			return this.instancePromise();
 		}
 	}
 
-
+	instancePromise () {
+		return new Promise((resolve, reject) => {
+			this.resolve = resolve;
+			this.reject = reject;
+		});
+	}
 
 	executeOne () {
 		const promise = this.funcs.shift()();
 
 		this.results.push(promise);
 		this.competitors.push(promise);
-
-		promise.then(() => {
-			this.competitors.splice(this.competitors.indexOf(promise), 1);
-		});
+		const remove = getRemover(this.competitors, promise)
+		promise.then(remove, remove);
 	}
 
 	startRace () {
 		const race = this.race = Promise.race(this.competitors);
 
 		race
-			.then(index => {
-				if (this.race === race) {
-					if (!this.funcs.length) {
-						if (this.terminates) {
-							return this.resolve(Promise.all(this.results));
-						} else {
-							this.running = false;
-						}
-					}
-					this.executeOne();
-					this.startRace();
-				}
+			.then(() => {
+				this.rejoinRace(race);
 			}, err => {
+
 				if (this.terminates) {
 					this.reject(err);
+				} else {
+					// give the ability to handle future errors;
+					const reject = this.reject;
+					const nextPromise = this.instancePromise();
+					reject({
+						error: err,
+						nextError: nextPromise,
+						terminate: this.terminate.bind(this)
+					});
+					this.rejoinRace(race);
 				}
 			});
 	}
+
+	rejoinRace (race) {
+		if (this.race === race) {
+			if (!this.funcs.length) {
+				if (this.terminates) {
+					return this.resolve(Promise.all(this.results));
+				} else {
+					this.running = false;
+				}
+			} else if (!this.cancelled) {
+				this.executeOne();
+				this.startRace();
+			}
+		}
+	}
+
+	terminate () {
+		this.resolve();
+		this.cancelled = true;
+	}
+
 }
 
 module.exports = function SmartConstructor (concurrence, funcs) {
 	const directly = new Directly(concurrence, funcs)
 	return (this instanceof SmartConstructor) ? directly : directly.run();
 };
+
+module.exports.Queue = require('./lib/queue');

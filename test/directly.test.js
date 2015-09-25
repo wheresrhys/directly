@@ -1,7 +1,5 @@
 'use strict';
 
-require('es6-promise').polyfill();
-
 var expect = require('chai').expect;
 var Directly = require('../directly');
 
@@ -220,5 +218,138 @@ describe('functional calling', function () {
 			p.resolve();
 		});
 
+	});
+})
+
+describe('infinite queueing', function () {
+
+	it('should call all on startup if throttle limit not reached', function (done) {
+		const result = [];
+		const funcs = new Directly.Queue([1, 2].map(i => {
+			return () => {
+				result.push(i);
+				return Promise.resolve(i);
+			}
+		}))
+
+		new Directly(3, funcs).run()
+		setTimeout(() => {
+			expect(result).to.eql([1, 2]);
+			done();
+		}, 50)
+	});
+
+	it('should only call up to the throttle limit on startup', function (done) {
+		const result = [];
+		const funcs = new Directly.Queue([1, 2, 3].map(i => {
+			return () => {
+				result.push(i);
+				return new Promise(() => null);
+			}
+		}))
+
+		new Directly(2, funcs).run()
+		setTimeout(() => {
+			expect(result).to.eql([1, 2]);
+			done();
+		}, 50)
+	});
+
+	it('should seamlessly call any promise function added after startup', function (done) {
+		const promises = setupPromises(3);
+		const funcs = new Directly.Queue(promises.functions);
+
+		new Directly(3, funcs).run();
+		let spyCalled = false;
+		const spy = () => {
+			spyCalled = true;
+			return new Promise(() => null)
+		};
+		funcs.push(spy);
+
+		setTimeout(() => {
+			expect(spyCalled).to.be.false;
+			promises.promises.forEach(promise => promise.resolve());
+
+			setTimeout(() => {
+				expect(spyCalled).to.be.true;
+				done();
+			}, 50)
+		}, 50);
+
+	});
+
+	it('should restart if functions are pushed when it is idling', function (done) {
+		const funcs = new Directly.Queue([1, 2].map(i => {
+			return () => {
+				return Promise.resolve(i);
+			}
+		}))
+
+		new Directly(3, funcs).run()
+		let spyCalled = false;
+		const spy = () => {
+			spyCalled = true;
+			return new Promise(() => null)
+		};
+		funcs.push(spy);
+
+		setTimeout(() => {
+			expect(spyCalled).to.be.true;
+			done();
+		}, 50)
+	});
+
+	it('should still apply concurrence limits to functions added after startup', function (done) {
+		const funcs = new Directly.Queue([1, 2].map(i => {
+			return () => {
+				return Promise.resolve(i);
+			}
+		}))
+
+		new Directly(3, funcs).run()
+		let spyCalled = false;
+		const spy = () => {
+			spyCalled = true;
+			return new Promise(() => null)
+		};
+		funcs.push(() => new Promise(() => null));
+		funcs.push(() => new Promise(() => null));
+		funcs.push(() => new Promise(() => null));
+		funcs.push(spy);
+
+		setTimeout(() => {
+			expect(spyCalled).to.be.false;
+			done();
+		}, 50)
+	});
+
+	it('should provide a promisey interface to handle errors', function (done) {
+		const funcs = new Directly.Queue([() => {
+			return Promise.reject('test error1');
+		}]);
+
+		var d = new Directly(3, funcs);
+
+		var p = d.run()
+			.catch(err1 => {
+				expect(err1.error).to.equal('test error1');
+
+				funcs.push(() => Promise.reject('test error2'));
+
+				err1.nextError.catch(err2 => {
+					expect(err2.error).to.equal('test error2');
+					err2.terminate();
+					let spyCalled = false;
+					const spy = () => {
+						spyCalled = true;
+						return new Promise(() => null)
+					};
+					setTimeout(() => {
+						expect(spyCalled).to.be.false;
+						done();
+					}, 50)
+				});
+			})
 	});
 })
