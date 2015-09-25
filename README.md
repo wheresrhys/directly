@@ -4,8 +4,8 @@
 
 This module could more descriptively be named Promise.allButNotAllAtOnce. It takes an array of functions, each of which return a promise, and returns a promise which resolves once all those promises have resolved, or otherwise rejects... very similar to `Promise.all`. The difference is that a maximum of `n` promises are created at any one time. This is useful for rate-limiting asynchronous calls (e.g. `fetch`, `mongoose`...)
 
-### *** New feature ***
-Now supports throttling of potentially infinite queues of Promises (see notes on the `Queue` constructor below)
+*** New feature ***
+Now supports throttling of potentially infinite queues of Promises (see notes on the `Queue` class below)
 
 ## About the name
 In the West Country people will often promise to do things 'directly' `[drekt-lee]`, meaning they'll do it when they're good and ready, possibly never. Example usage:
@@ -47,10 +47,10 @@ throttledRequests
 throttledRequests.terminate()
 ```
 
-To handle an infinite queue of promises use the `Queue` class to wrap your arrya of functions
+To handle an infinite queue of promises use the `Queue` class to wrap your array of functions
 
 ```
-fetchers = directly.Queue(fetchers);
+fetchers = new directly.Queue(fetchers);
 directly(10, fetchers)
     .catch(function (errorObject) {
         // You can handle any errors in here
