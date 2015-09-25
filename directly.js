@@ -1,64 +1,90 @@
 'use strict';
 
-var Directly = function (concurrence, funcs) {
-
-	if (!Promise) {
-		throw 'Directly requires es6 Promises';
+class Directly {
+	constructor (concurrence, funcs) {
+		if (!(this instanceof Directly)) {
+			return new Directly(concurrence, funcs).run();
+		}
+		this.results = [];
+		this.concurrence = concurrence;
+		this.funcs = funcs;
+		this.terminates = Array.isArray(this.funcs);
+		this.competitors = [];
 	}
 
-	if (!(this instanceof Directly)) {
-		return new Directly(concurrence, funcs).run();
-	}
-	this.results = [];
-	this.concurrence = concurrence;
-	this.funcs = funcs;
-	this.competitors = [];
-};
+	run () {
 
-Directly.prototype.run = function () {
-
-	if (this.funcs.length <= this.concurrence) {
-		return Promise.all(this.funcs.map(function (func) {
-			return func();
-		}));
-	}
-
-	while (this.concurrence--) {
-		this.executeOne();
-	}
-	this.startRace();
-
-	return new Promise(function (resolve, reject) {
-		this.resolve = resolve;
-		this.reject = reject;
-	}.bind(this));
-};
-
-Directly.prototype.executeOne = function () {
-	var promise = this.funcs.shift()();
-	var competitors = this.competitors;
-
-	this.results.push(promise);
-	competitors.push(promise);
-
-	promise.then(function () {
-		competitors.splice(competitors.indexOf(promise), 1);
-	});
-};
-
-Directly.prototype.startRace = function () {
-	Promise.race(this.competitors)
-		.then(function (index) {
-			if (!this.funcs.length) {
-				return this.resolve(Promise.all(this.results));
+		if (this.terminates) {
+			this.running = true;
+			if (this.funcs.length <= this.concurrence) {
+				return Promise.all(this.funcs.map(func => func()));
 			}
 
-			this.executeOne();
+			while (this.concurrence - this.competitors.length) {
+				this.executeOne();
+			}
 			this.startRace();
 
-		}.bind(this), function (err) {
-			this.reject(err);
-		}.bind(this));
-};
+			return new Promise((resolve, reject) => {
+				this.resolve = resolve;
+				this.reject = reject;
+			});
+		} else {
+			if (this.running === true) {
+				if (this.competitors.length < this.concurrence) {
+					// cancel the old race/restart race/blend race ???
+				} // else do nothing - it should just get shifted off the list in time
 
-module.exports = Directly;
+			} else {
+				// never take the Promise.all shortcut as even if the initial list is short, it
+				// could easily grow to exceed the concurrence limit.
+				while (this.funcs.length && this.concurrence - this.competitors.length) {
+					this.executeOne();
+				}
+				this.startRace();
+			}
+			this.running === true;
+		}
+	}
+
+
+
+	executeOne () {
+		const promise = this.funcs.shift()();
+
+		this.results.push(promise);
+		this.competitors.push(promise);
+
+		promise.then(() => {
+			this.competitors.splice(this.competitors.indexOf(promise), 1);
+		});
+	}
+
+	startRace () {
+		const race = this.race = Promise.race(this.competitors);
+
+		race
+			.then(index => {
+				if (this.race === race) {
+					if (!this.funcs.length) {
+						if (this.terminates) {
+							return this.resolve(Promise.all(this.results));
+						} else {
+							this.running = false;
+						}
+					}
+					this.executeOne();
+					this.startRace();
+				}
+			}, err => {
+				if (this.terminates) {
+					this.reject(err);
+				}
+			});
+	}
+}
+
+module.exports = function SmartConstructor (concurrence, funcs) {
+	const directly = new Directly(concurrence, funcs)
+	return (this instanceof SmartConstructor) ? directly : directly.run();
+};
