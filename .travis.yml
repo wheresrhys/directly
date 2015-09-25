@@ -6,3 +6,14 @@ node_js:
 deploy:
   api_key:
     secure: opyL9JEWNrV9WSs5DU49r+X2ffhuVMRSv7qbOHQvlGCIGjeWPWXD9CwBZiqWYOUM55FSVxTe5zslGMATrCd1QJW9CDOmOTvujq5mvfLuEPnJzzSR0SNdXZ6FstUQ06G7yhqKzJUvVWwRY1VOQ+XW0edDJ0+OYF87UYW+WhIFdDvSEREY+Nolihe7zPdSzudd43GMcJ/Fyd3iKx1v2ZrNX2X5WA38evbujws7bBRBH1+J3ispuR0T2ysiCME98QDvDbITFc7ku5E3J2lVLeF7n4AwvEouOLCt31hQVjeEzzlHBrn1Z9L5I+PgO9dCxjTBiYEwNBn2DPlKpMM7EGmLoY6IRUba/c7y0Fpa44ChdepVIW9nip+HdWO6XRABMpO5QY6i+G0SnO5JHAjjQV8YywKB7zJSuA4jTHrW9+/QDBApcoy2M2EE/L851ZMlc+D8neDT2Y2ZK5kmxSjC4aDKwiL6fzKnCVhtjfl8YRTX+zemDA+bZ00qv/A6NzfWs6b/qtZn+dXlQZ0SvKxVlJUr0a0lBMLb9EPAajyY+lEJrN7GuNjSpxCxAbJmIPlukHoxIn+RAbnBs5BNCqTsqh75Nf91tiERWIPgkQ/eo0GArnTtw6PqDvWXAwFg0Mp82IgoWs2nUo5FKOhTT0Z5fiDGib3e5fD09BCgMqs/NL0g928=
+before_deploy:
+- npm-prepublish --verbose
+deploy:
+  provider: npm
+  email: wheresrhys@gmail.com
+  api_key:
+    secure: CdQkA4gLU7yAEnSAGcWtf7PdRf/WSJc/UkX94KfLyx3xv0KGREWhWqD4yZok4ay6N039lpXaBOq3ZJJ0XKKrKOW9em5CL2rP0NGgEbOMSk53Yk+tJya9mi3Ni2mZTfNhoOIpSj6Qja0M2uF4/+UnwlKzruu0tbDd1u/vHkssniI=
+  on:
+    all_branches: true
+    tags: true
+    repo: wheresrhys/directly
