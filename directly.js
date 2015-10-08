@@ -8,9 +8,6 @@ function getRemover (arr, target) {
 
 class Directly {
 	constructor (concurrence, funcs) {
-		if (!(this instanceof Directly)) {
-			return new Directly(concurrence, funcs).run();
-		}
 		this.results = [];
 		this.concurrence = concurrence;
 		this.funcs = funcs;
