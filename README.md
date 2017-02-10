@@ -14,7 +14,7 @@ In the West Country people will often promise to do things 'directly' `[drekt-le
 
 ## Usage
 
-```
+```js
 const directly = require('directly');
 const urls = []; // a big array of urls
 const fetchers = urls.map(function (url) {
@@ -33,7 +33,7 @@ directly(10, fetchers)
 
 Can also be called as a constructor (in which case the `.run()` method should be used)
 
-```
+```js
 const Directly = require('Directly');
 const throttledRequests = new Directly(10, fetchers)
 
@@ -49,7 +49,7 @@ throttledRequests.terminate()
 
 To handle an infinite queue of promises use the `Queue` class to wrap your array of functions
 
-```
+```js
 fetchers = new directly.Queue(fetchers);
 directly(10, fetchers)
     .catch(function (errorObject) {
