@@ -65,4 +65,4 @@ fetchers.push(func1, func2, func3)
 ```
 
 
-*Based on an idea originally developed [at FT](https://github.com/Financial-Times/next-user-preferences-api-v2/blob/master/lib/promise-throttle.js)*
+*Based on an idea originally developed at the [FT](https://ft.com)*
