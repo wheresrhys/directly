@@ -20,6 +20,9 @@ class Directly {
 	}
 
 	run () {
+		if (typeof this.funcs[0] !== 'function') {
+			throw new TypeError(`directly expects a list functions that return a Promise, not a list of Promises`)
+		}
 		if (this.terminates) {
 			if (this.funcs.length <= this.concurrence) {
 				return Promise.all(this.funcs.map(func => func()));
