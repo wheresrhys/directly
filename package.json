@@ -1,6 +1,6 @@
 {
   "name": "directly",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Like Promise.all, only less so",
   "main": "directly.js",
   "scripts": {
