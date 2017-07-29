@@ -3,14 +3,4 @@ language: node_js
 script: npm test
 node_js:
 - '4'
-deploy:
-  provider: npm
-  email: wheresrhys@gmail.com
-  api_key:
-    secure: lV/yF/gFoNIuu/sk7nPE8bkXliv6nWF7cT6Bkdsw/OzfczTJZYELL+qSmHBo7Tp24LGh/NchT1TTlGBbnpPKvD/y+TW++dEYyd85Ja9OTpJQMBjyfnR5KAOUhv/jNfXoGrIVE0PG/1UkNq86mrGXdaZadR1yYPpz1t6N+gZ+zpxDx18bUE+7h3fhdeYISvNLSPCkuprBUSHiwH7yYTAsNwKXNZ40Fy4RbOSkQiBqqe7o04Q22ip+jBYlMPe4oOtZiwZfWFFM538VW6oWaPj2WO6UEMDKmF0ntxutk/XSjuXCW4A0Rdw4LPnxMS8BHBoQ7vAlEfEfDdXSmbLnJGCypb4T7gO9eFK/Oa0O+X4eqbGZniLRS8ie7KiM1cMmhMZ6SOG5yu+ss5+LWieMyBtT37W8l/7IpYjoNy+3PmIj/dtP99uHpf5FozBA8figt4AAd+FT1tRLQp4BUIwCUxAc9mVKzsuTrUnRTsgYPNiilBwV9naU6Ny4hTW1Mh+Nnsqiy2HS2okpPy9xTxdC01BNVFNID9/qGFqj3KFZAPtMoGdkRjALG3IH+nUA1erqnyqFXcdACKsihX4YkiKqywNgfUYGo5OUPKDOLIAZISuWewqIsP3AKvF29vEeAxAZoJvVGY/kq3JypJowjY/ORwdrfwTK7qk7g8ie4IRmaTbCSLw=
-  on:
-    all_branches: true
-    tags: true
-    repo: wheresrhys/directly
-before_deploy:
-- npm-prepublish --verbose
+
