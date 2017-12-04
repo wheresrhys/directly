@@ -20,6 +20,10 @@ class Directly {
 	}
 
 	run () {
+		if (Array.isArray(this.funcs) && !this.funcs.length) {
+			return Promise.resolve([]);		
+		}
+
 		if (typeof this.funcs[0] !== 'function') {
 			throw new TypeError('directly expects a list functions that return a Promise, not a list of Promises')
 		}
