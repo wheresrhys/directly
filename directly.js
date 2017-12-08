@@ -21,12 +21,13 @@ class Directly {
 
 	run () {
 		if (Array.isArray(this.funcs) && !this.funcs.length) {
-			return Promise.resolve([]);		
+			return Promise.resolve([]);
 		}
 
-		if (typeof this.funcs[0] !== 'function') {
+		if (Array.isArray(this.funcs) && typeof this.funcs[0] !== 'function') {
 			throw new TypeError('directly expects a list functions that return a Promise, not a list of Promises')
 		}
+
 		if (this.terminates) {
 			if (this.funcs.length <= this.concurrence) {
 				return Promise.all(this.funcs.map(func => func()));
