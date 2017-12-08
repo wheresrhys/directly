@@ -44,6 +44,22 @@ var getMutablePromise = function (n) {
 
 describe('concordance with Promise.all', function () {
 
+	describe('promise count is zero', function () {
+		it('should resolve with an empty array', function (done) {
+			var promises = setupPromises(0);
+
+			new Directly(3, promises.functions).run()
+				.then(function (res) {
+					expect(res).to.eql([]);
+					done();
+				});
+			promises.promises.forEach(function (p) {
+				p.resolve();
+			});
+
+		});
+	});
+
 	describe('promise count is under limit', function () {
 
 		it('should resolve if they all resolve', function (done) {
