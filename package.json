@@ -24,10 +24,8 @@
   },
   "homepage": "https://github.com/wheresrhys/directly",
   "devDependencies": {
-    "chai": "^3.2.0",
-    "es6-promise": "^2.3.0",
-    "mocha": "^2.2.5",
-    "npm-prepublish": "^1.2.1"
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
   },
   "dependencies": {}
 }
