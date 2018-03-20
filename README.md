@@ -14,6 +14,17 @@ In the West Country people will often promise to do things 'directly' `[drekt-le
 
 ## Usage
 
+A really common use case is as a drop-in replacement for `Promise.all` on a mapped array. Using arrow functions it's easy:
+
+```js
+// before
+Promise.all(myArray.map(myPromiseyFunction));
+
+//after
+directly(10, myArray.map(it => () => myPromiseyFunction(it)));
+```
+
+### Other use cases
 ```js
 const directly = require('directly');
 const urls = []; // a big array of urls
